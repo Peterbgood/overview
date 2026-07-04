@@ -153,14 +153,14 @@
 
         .app-content {
             padding: 30px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            display: block;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         @media (max-width: 768px) {
             .app-content {
-                grid-template-columns: 1fr;
+                padding: 20px;
             }
         }
 
@@ -310,19 +310,20 @@
         }
 
         .delete-btn {
-            background: #fecaca;
+            background: transparent;
             color: #dc2626;
             border: none;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 4px;
             cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 20px;
+            font-weight: 300;
             transition: all 0.2s ease;
+            opacity: 0.6;
         }
 
         .delete-btn:hover {
-            background: #fca5a5;
+            opacity: 1;
+            color: #991b1b;
         }
 
         .empty-state {
@@ -365,6 +366,189 @@
             color: #991b1b;
             border: 1px solid #fecaca;
         }
+
+        /* FLOATING ACTION BUTTON */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 28px rgba(102, 126, 234, 0.6);
+        }
+
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        /* LEDGER STYLING */
+        .ledger-section {
+            margin-bottom: 30px;
+        }
+
+        .ledger-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ledger-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .ledger-item:last-child {
+            border-bottom: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .ledger-item:first-child {
+            border-radius: 8px 8px 0 0;
+        }
+
+        .ledger-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .ledger-amount {
+            font-weight: 600;
+            color: #667eea;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .ledger-item.liability .ledger-amount {
+            color: #dc2626;
+        }
+
+        /* SUMMARY CARDS */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .summary-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .summary-card-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .summary-card-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .summary-card.assets .summary-card-value {
+            color: #16a34a;
+        }
+
+        .summary-card.liabilities .summary-card-value {
+            color: #dc2626;
+        }
+
+        .summary-card.networth .summary-card-value {
+            color: #667eea;
+        }
     </style>
 </head>
 <body>
@@ -389,65 +573,67 @@
         </div>
 
         <div class="app-content">
-            <!-- LEFT COLUMN: ASSETS -->
-            <div>
-                <div class="form-section">
-                    <h2>➕ Add Entry</h2>
-                    <div id="message"></div>
-                    
-                    <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" id="itemName" placeholder="e.g., Savings Account">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Amount ($)</label>
-                        <input type="number" id="itemAmount" placeholder="0.00" step="0.01" min="0">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Type</label>
-                        <select id="itemType">
-                            <option value="asset">Asset</option>
-                            <option value="liability">Liability</option>
-                        </select>
-                    </div>
-
-                    <button class="add-btn" onclick="addItem()">Add Entry</button>
+            <!-- SUMMARY CARDS -->
+            <div class="summary-cards">
+                <div class="summary-card assets">
+                    <div class="summary-card-label">Total Assets</div>
+                    <div class="summary-card-value" id="totalAssets">$0.00</div>
                 </div>
-
-                <div class="form-section" style="margin-top: 20px;">
-                    <h2>📈 Assets</h2>
-                    <div class="items-list">
-                        <div id="assetsList"></div>
-                    </div>
+                <div class="summary-card liabilities">
+                    <div class="summary-card-label">Total Liabilities</div>
+                    <div class="summary-card-value" id="totalLiabilities">$0.00</div>
                 </div>
-
-                <div class="form-section" style="margin-top: 20px;">
-                    <h2>📉 Liabilities</h2>
-                    <div class="items-list">
-                        <div id="liabilitiesList"></div>
-                    </div>
+                <div class="summary-card networth" style="grid-column: 1 / -1;">
+                    <div class="summary-card-label">Net Worth</div>
+                    <div class="summary-card-value" id="netWorth">$0.00</div>
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: SUMMARY -->
-            <div>
-                <div class="summary-section">
-                    <h2>📊 Summary</h2>
-                    <div class="summary-item">
-                        <strong>Total Assets:</strong>
-                        <span class="amount assets-amount" id="totalAssets">$0.00</span>
-                    </div>
-                    <div class="summary-item">
-                        <strong>Total Liabilities:</strong>
-                        <span class="amount liabilities-amount" id="totalLiabilities">$0.00</span>
-                    </div>
-                    <div class="net-worth">
-                        <div>Net Worth</div>
-                        <div class="net-worth-value" id="netWorth">$0.00</div>
-                    </div>
+            <!-- MESSAGE -->
+            <div id="message"></div>
+
+            <!-- LEDGER VIEW -->
+            <div class="ledger-section">
+                <h3>📈 Assets</h3>
+                <div id="assetsList"></div>
+            </div>
+
+            <div class="ledger-section">
+                <h3>📉 Liabilities</h3>
+                <div id="liabilitiesList"></div>
+            </div>
+        </div>
+
+        <!-- FLOATING ACTION BUTTON -->
+        <button class="fab" onclick="openModal()" title="Add Entry">+</button>
+
+        <!-- ADD ENTRY MODAL -->
+        <div class="modal" id="addModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span>➕ Add Entry</span>
+                    <button class="close-btn" onclick="closeModal()">✕</button>
                 </div>
+
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="itemName" placeholder="e.g., Savings Account">
+                </div>
+
+                <div class="form-group">
+                    <label>Amount ($)</label>
+                    <input type="number" id="itemAmount" placeholder="0.00" step="0.01" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="itemType">
+                        <option value="asset">Asset</option>
+                        <option value="liability">Liability</option>
+                    </select>
+                </div>
+
+                <button class="add-btn" onclick="addItemAndClose()">Add Entry</button>
             </div>
         </div>
     </div>
@@ -474,9 +660,37 @@
         window.logout = logout;
         window.addItem = addItem;
         window.deleteItem = deleteItem;
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+        window.addItemAndClose = addItemAndClose;
 
         let isAuthenticated = false;
         let userItems = [];
+
+        // MODAL FUNCTIONS
+        function openModal() {
+            document.getElementById('addModal').classList.add('active');
+            document.getElementById('itemName').focus();
+        }
+
+        function closeModal() {
+            document.getElementById('addModal').classList.remove('active');
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemAmount').value = '';
+            document.getElementById('itemType').value = 'asset';
+        }
+
+        function addItemAndClose() {
+            addItem();
+            if (!document.getElementById('message').textContent.includes('Error')) {
+                closeModal();
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('addModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
 
         // PIN CHECK
         async function checkPin() {
@@ -593,21 +807,21 @@
             const netWorth = totalAssets - totalLiabilities;
 
             // Update summary
-            document.getElementById('totalAssets').textContent = `$${totalAssets.toFixed(2)}`;
-            document.getElementById('totalLiabilities').textContent = `$${totalLiabilities.toFixed(2)}`;
-            document.getElementById('netWorth').textContent = `$${netWorth.toFixed(2)}`;
+            document.getElementById('totalAssets').textContent = `$${totalAssets.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            document.getElementById('totalLiabilities').textContent = `$${totalLiabilities.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            document.getElementById('netWorth').textContent = `$${netWorth.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
             // Update assets list
             if (assets.length === 0) {
                 assetsList.innerHTML = '<div class="empty-state">No assets yet</div>';
             } else {
                 assetsList.innerHTML = assets.map(item => `
-                    <div class="item">
-                        <div class="item-info">
-                            <div class="item-name">${item.name}</div>
-                            <div class="item-amount">$${item.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                    <div class="ledger-item">
+                        <span class="ledger-name">${item.name}</span>
+                        <div class="ledger-amount">
+                            <span>$${item.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                            <button class="delete-btn" onclick="deleteItem('${item.id}')">×</button>
                         </div>
-                        <button class="delete-btn" onclick="deleteItem('${item.id}')">Delete</button>
                     </div>
                 `).join('');
             }
@@ -617,12 +831,12 @@
                 liabilitiesList.innerHTML = '<div class="empty-state">No liabilities yet</div>';
             } else {
                 liabilitiesList.innerHTML = liabilities.map(item => `
-                    <div class="item liability">
-                        <div class="item-info">
-                            <div class="item-name">${item.name}</div>
-                            <div class="item-amount">$${item.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                    <div class="ledger-item liability">
+                        <span class="ledger-name">${item.name}</span>
+                        <div class="ledger-amount">
+                            <span>$${item.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                            <button class="delete-btn" onclick="deleteItem('${item.id}')">×</button>
                         </div>
-                        <button class="delete-btn" onclick="deleteItem('${item.id}')">Delete</button>
                     </div>
                 `).join('');
             }
@@ -633,9 +847,18 @@
             if (e.key === 'Enter') checkPin();
         });
 
-        // Allow Enter key on item name input
+        // Modal keyboard events
         document.getElementById('itemName').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') addItem();
+            if (e.key === 'Enter') document.getElementById('itemAmount').focus();
+        });
+
+        document.getElementById('itemAmount').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addItemAndClose();
+        });
+
+        // Escape key closes modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
         });
     </script>
 </body>
