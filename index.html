@@ -389,7 +389,7 @@
         </div>
 
         <div class="app-content">
-            <!-- LEFT COLUMN: ADD ITEMS -->
+            <!-- LEFT COLUMN: ASSETS -->
             <div>
                 <div class="form-section">
                     <h2>➕ Add Entry</h2>
@@ -416,8 +416,18 @@
                     <button class="add-btn" onclick="addItem()">Add Entry</button>
                 </div>
 
-                <div class="items-list">
-                    <div id="itemsList"></div>
+                <div class="form-section" style="margin-top: 20px;">
+                    <h2>📈 Assets</h2>
+                    <div class="items-list">
+                        <div id="assetsList"></div>
+                    </div>
+                </div>
+
+                <div class="form-section" style="margin-top: 20px;">
+                    <h2>📉 Liabilities</h2>
+                    <div class="items-list">
+                        <div id="liabilitiesList"></div>
+                    </div>
                 </div>
             </div>
 
@@ -567,9 +577,16 @@
 
         // UPDATE UI
         function updateUI() {
-            const itemsList = document.getElementById('itemsList');
-            const assets = userItems.filter(item => item.type === 'asset');
-            const liabilities = userItems.filter(item => item.type === 'liability');
+            const assetsList = document.getElementById('assetsList');
+            const liabilitiesList = document.getElementById('liabilitiesList');
+            
+            // Filter and sort by amount (highest first)
+            const assets = userItems
+                .filter(item => item.type === 'asset')
+                .sort((a, b) => b.amount - a.amount);
+            const liabilities = userItems
+                .filter(item => item.type === 'liability')
+                .sort((a, b) => b.amount - a.amount);
 
             const totalAssets = assets.reduce((sum, item) => sum + item.amount, 0);
             const totalLiabilities = liabilities.reduce((sum, item) => sum + item.amount, 0);
@@ -580,15 +597,30 @@
             document.getElementById('totalLiabilities').textContent = `$${totalLiabilities.toFixed(2)}`;
             document.getElementById('netWorth').textContent = `$${netWorth.toFixed(2)}`;
 
-            // Update items list
-            if (userItems.length === 0) {
-                itemsList.innerHTML = '<div class="empty-state">No entries yet. Add one to get started!</div>';
+            // Update assets list
+            if (assets.length === 0) {
+                assetsList.innerHTML = '<div class="empty-state">No assets yet</div>';
             } else {
-                itemsList.innerHTML = userItems.map(item => `
-                    <div class="item ${item.type === 'liability' ? 'liability' : ''}">
+                assetsList.innerHTML = assets.map(item => `
+                    <div class="item">
                         <div class="item-info">
                             <div class="item-name">${item.name}</div>
-                            <div class="item-amount">${item.type === 'asset' ? '📈' : '📉'} $${item.amount.toFixed(2)}</div>
+                            <div class="item-amount">$${item.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                        </div>
+                        <button class="delete-btn" onclick="deleteItem('${item.id}')">Delete</button>
+                    </div>
+                `).join('');
+            }
+
+            // Update liabilities list
+            if (liabilities.length === 0) {
+                liabilitiesList.innerHTML = '<div class="empty-state">No liabilities yet</div>';
+            } else {
+                liabilitiesList.innerHTML = liabilities.map(item => `
+                    <div class="item liability">
+                        <div class="item-info">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-amount">$${item.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                         </div>
                         <button class="delete-btn" onclick="deleteItem('${item.id}')">Delete</button>
                     </div>
