@@ -286,34 +286,9 @@
             transform: scale(0.98);
         }
 
-        /* FLOATING ACTION BUTTON */
-        .fab {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #0071e3 0%, #0077be 100%);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 28px;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0, 113, 227, 0.3);
-            transition: all 0.3s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 300;
-        }
-
-        .fab:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 28px rgba(0, 113, 227, 0.4);
-        }
-
-        .fab:active {
-            transform: scale(0.95);
+        .bottom-action-section {
+            margin-top: 32px;
+            padding-bottom: 32px;
         }
 
         /* MODAL */
@@ -523,7 +498,6 @@
     </style>
 </head>
 <body>
-    <!-- PIN SCREEN -->
     <div class="pin-screen" id="pinScreen">
         <h1>Net Worth</h1>
         <p>Enter PIN to continue</p>
@@ -553,7 +527,6 @@
         <div class="pin-error" id="pinError"></div>
     </div>
 
-    <!-- MAIN APP -->
     <div class="app-container" id="appContainer">
         <button class="logout-btn" onclick="logout()">Logout</button>
         
@@ -563,7 +536,6 @@
         </div>
 
         <div class="app-content">
-            <!-- SUMMARY CARDS -->
             <div class="summary-cards">
                 <div class="summary-card assets">
                     <div class="summary-card-label">Total Assets</div>
@@ -579,10 +551,8 @@
                 </div>
             </div>
 
-            <!-- MESSAGE -->
             <div id="message"></div>
 
-            <!-- LEDGER VIEW -->
             <div class="ledger-section">
                 <h3>📈 Assets</h3>
                 <div id="assetsList"></div>
@@ -592,12 +562,12 @@
                 <h3>📉 Liabilities</h3>
                 <div id="liabilitiesList"></div>
             </div>
+            
+            <div class="bottom-action-section">
+                <button class="add-btn" onclick="openModal()">➕ Add New Entry</button>
+            </div>
         </div>
 
-        <!-- FLOATING ACTION BUTTON -->
-        <button class="fab" onclick="openModal()" title="Add Entry">+</button>
-
-        <!-- ADD ENTRY MODAL -->
         <div class="modal" id="addModal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -756,7 +726,11 @@
             document.getElementById('appContainer').style.display = 'none';
             document.getElementById('pinInput').value = '';
             userItems = [];
-            document.getElementById('itemsList').innerHTML = '';
+            
+            const assetsList = document.getElementById('assetsList');
+            const liabilitiesList = document.getElementById('liabilitiesList');
+            if(assetsList) assetsList.innerHTML = '';
+            if(liabilitiesList) liabilitiesList.innerHTML = '';
         }
 
         // ADD ITEM
@@ -876,24 +850,23 @@
             }
         }
 
-        // PIN Input keyboard support
-        document.getElementById('pinInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Backspace') {
-                e.preventDefault();
-                deletePin();
-            } else if (e.key === 'Enter') {
-                e.preventDefault();
-                checkPin();
-            } else if (e.key === 'Escape') {
-                e.preventDefault();
-                clearPin();
-            }
-        });
-
-        document.getElementById('pinInput').addEventListener('keypress', function(e) {
-            if (/[0-9]/.test(e.key)) {
-                e.preventDefault();
-                addPin(e.key);
+        // Global Keyboard Support for PIN Screen
+        document.addEventListener('keydown', function(e) {
+            // Only capture input if the user is not authenticated (meaning they are on the PIN screen)
+            if (!isAuthenticated) {
+                if (e.key === 'Backspace') {
+                    e.preventDefault();
+                    deletePin();
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    checkPin();
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    clearPin();
+                } else if (/^[0-9]$/.test(e.key)) {
+                    e.preventDefault();
+                    addPin(e.key);
+                }
             }
         });
 
