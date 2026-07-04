@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assets & Liabilities Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* PIN SCREEN */
+        .pin-screen {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .pin-screen h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .pin-screen p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .pin-input-container {
+            margin-bottom: 30px;
+        }
+
+        .pin-input {
+            font-size: 24px;
+            letter-spacing: 8px;
+            padding: 15px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            text-align: center;
+            width: 100%;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .pin-input:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .pin-input.error {
+            border-color: #ef4444;
+            animation: shake 0.4s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .pin-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s ease;
+        }
+
+        .pin-button:hover {
+            transform: scale(1.02);
+        }
+
+        .pin-button:active {
+            transform: scale(0.98);
+        }
+
+        .pin-error {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+
+        /* MAIN APP */
+        .app-container {
+            display: none;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 900px;
+            overflow: hidden;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .app-header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .app-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .app-content {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .app-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-section {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            background: #f9fafb;
+        }
+
+        .form-section h2 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s ease;
+        }
+
+        .add-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .summary-section {
+            background: #f0f4ff;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #d4d9f0;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #d4d9f0;
+            font-size: 14px;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-item strong {
+            color: #333;
+        }
+
+        .summary-item .amount {
+            font-weight: 600;
+        }
+
+        .assets-amount {
+            color: #16a34a;
+        }
+
+        .liabilities-amount {
+            color: #dc2626;
+        }
+
+        .net-worth {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #d4d9f0;
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .net-worth-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .items-list {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .item {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #667eea;
+            font-size: 14px;
+        }
+
+        .item.liability {
+            border-left-color: #dc2626;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .item-amount {
+            color: #666;
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        .delete-btn {
+            background: #fecaca;
+            color: #dc2626;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            background: #fca5a5;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f4f6;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .message.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+    </style>
+</head>
+<body>
+    <!-- PIN SCREEN -->
+    <div class="pin-screen" id="pinScreen">
+        <h1>🔐 Unlock</h1>
+        <p>Enter your PIN to access your assets</p>
+        <div class="pin-input-container">
+            <input type="password" id="pinInput" class="pin-input" placeholder="••••" maxlength="4" inputmode="numeric">
+        </div>
+        <button class="pin-button" onclick="checkPin()">Unlock</button>
+        <div class="pin-error" id="pinError"></div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div class="app-container" id="appContainer">
+        <button class="logout-btn" onclick="logout()">Logout</button>
+        
+        <div class="app-header">
+            <h1>💰 Assets & Liabilities</h1>
+            <p>Track your financial position</p>
+        </div>
+
+        <div class="app-content">
+            <!-- LEFT COLUMN: ADD ITEMS -->
+            <div>
+                <div class="form-section">
+                    <h2>➕ Add Entry</h2>
+                    <div id="message"></div>
+                    
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="itemName" placeholder="e.g., Savings Account">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Amount ($)</label>
+                        <input type="number" id="itemAmount" placeholder="0.00" step="0.01" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="itemType">
+                            <option value="asset">Asset</option>
+                            <option value="liability">Liability</option>
+                        </select>
+                    </div>
+
+                    <button class="add-btn" onclick="addItem()">Add Entry</button>
+                </div>
+
+                <div class="items-list">
+                    <div id="itemsList"></div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: SUMMARY -->
+            <div>
+                <div class="summary-section">
+                    <h2>📊 Summary</h2>
+                    <div class="summary-item">
+                        <strong>Total Assets:</strong>
+                        <span class="amount assets-amount" id="totalAssets">$0.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <strong>Total Liabilities:</strong>
+                        <span class="amount liabilities-amount" id="totalLiabilities">$0.00</span>
+                    </div>
+                    <div class="net-worth">
+                        <div>Net Worth</div>
+                        <div class="net-worth-value" id="netWorth">$0.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, addDoc, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyATVgByZ97lJTZWv18FbCrAryPOXeO0JZ4",
+            authDomain: "assets-8cc78.firebaseapp.com",
+            projectId: "assets-8cc78",
+            storageBucket: "assets-8cc78.firebasestorage.app",
+            messagingSenderId: "981433426082",
+            appId: "1:981433426082:web:cb1c5e4c817b8fe8e4f7fb",
+            measurementId: "G-NXZBRW1X1B"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Make functions global
+        window.checkPin = checkPin;
+        window.logout = logout;
+        window.addItem = addItem;
+        window.deleteItem = deleteItem;
+
+        let isAuthenticated = false;
+        let userItems = [];
+
+        // PIN CHECK
+        async function checkPin() {
+            const pinInput = document.getElementById('pinInput');
+            const pinError = document.getElementById('pinError');
+            const pin = pinInput.value;
+
+            if (pin !== '3270') {
+                pinInput.classList.add('error');
+                pinError.textContent = 'Incorrect PIN. Try again.';
+                pinInput.value = '';
+                setTimeout(() => {
+                    pinInput.classList.remove('error');
+                }, 400);
+                return;
+            }
+
+            isAuthenticated = true;
+            pinError.textContent = '';
+            document.getElementById('pinScreen').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'block';
+            loadItems();
+        }
+
+        // LOGOUT
+        function logout() {
+            isAuthenticated = false;
+            document.getElementById('pinScreen').style.display = 'flex';
+            document.getElementById('appContainer').style.display = 'none';
+            document.getElementById('pinInput').value = '';
+            userItems = [];
+            document.getElementById('itemsList').innerHTML = '';
+        }
+
+        // ADD ITEM
+        async function addItem() {
+            const name = document.getElementById('itemName').value.trim();
+            const amount = parseFloat(document.getElementById('itemAmount').value);
+            const type = document.getElementById('itemType').value;
+            const messageDiv = document.getElementById('message');
+
+            if (!name || isNaN(amount) || amount < 0) {
+                messageDiv.innerHTML = '<div class="message error">Please fill in all fields correctly</div>';
+                return;
+            }
+
+            try {
+                const docRef = await addDoc(collection(db, 'items'), {
+                    name,
+                    amount,
+                    type,
+                    timestamp: new Date(),
+                    userId: 'default-user' // Using default user since no auth
+                });
+
+                userItems.push({ id: docRef.id, name, amount, type });
+                
+                document.getElementById('itemName').value = '';
+                document.getElementById('itemAmount').value = '';
+                messageDiv.innerHTML = '<div class="message success">✓ Entry added successfully</div>';
+                
+                setTimeout(() => {
+                    messageDiv.innerHTML = '';
+                }, 2000);
+
+                updateUI();
+            } catch (error) {
+                messageDiv.innerHTML = '<div class="message error">Error adding entry. Try again.</div>';
+                console.error('Error:', error);
+            }
+        }
+
+        // DELETE ITEM
+        async function deleteItem(id) {
+            try {
+                await deleteDoc(doc(db, 'items', id));
+                userItems = userItems.filter(item => item.id !== id);
+                updateUI();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // LOAD ITEMS
+        async function loadItems() {
+            try {
+                const q = query(collection(db, 'items'), where('userId', '==', 'default-user'));
+                const querySnapshot = await getDocs(q);
+                userItems = [];
+                querySnapshot.forEach((doc) => {
+                    userItems.push({ id: doc.id, ...doc.data() });
+                });
+                updateUI();
+            } catch (error) {
+                console.error('Error loading items:', error);
+            }
+        }
+
+        // UPDATE UI
+        function updateUI() {
+            const itemsList = document.getElementById('itemsList');
+            const assets = userItems.filter(item => item.type === 'asset');
+            const liabilities = userItems.filter(item => item.type === 'liability');
+
+            const totalAssets = assets.reduce((sum, item) => sum + item.amount, 0);
+            const totalLiabilities = liabilities.reduce((sum, item) => sum + item.amount, 0);
+            const netWorth = totalAssets - totalLiabilities;
+
+            // Update summary
+            document.getElementById('totalAssets').textContent = `$${totalAssets.toFixed(2)}`;
+            document.getElementById('totalLiabilities').textContent = `$${totalLiabilities.toFixed(2)}`;
+            document.getElementById('netWorth').textContent = `$${netWorth.toFixed(2)}`;
+
+            // Update items list
+            if (userItems.length === 0) {
+                itemsList.innerHTML = '<div class="empty-state">No entries yet. Add one to get started!</div>';
+            } else {
+                itemsList.innerHTML = userItems.map(item => `
+                    <div class="item ${item.type === 'liability' ? 'liability' : ''}">
+                        <div class="item-info">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-amount">${item.type === 'asset' ? '📈' : '📉'} $${item.amount.toFixed(2)}</div>
+                        </div>
+                        <button class="delete-btn" onclick="deleteItem('${item.id}')">Delete</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Allow Enter key on PIN input
+        document.getElementById('pinInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkPin();
+        });
+
+        // Allow Enter key on item name input
+        document.getElementById('itemName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addItem();
+        });
+    </script>
+</body>
+</html>
