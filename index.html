@@ -12,8 +12,8 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', sans-serif;
+            background: #f5f5f7;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -24,294 +24,460 @@
         /* PIN SCREEN */
         .pin-screen {
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            padding: 60px 40px;
             width: 100%;
-            max-width: 400px;
+            max-width: 320px;
             text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .pin-screen {
+                padding: 40px 20px;
+                border-radius: 0;
+                max-width: 100%;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
         }
 
         .pin-screen h1 {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
         .pin-screen p {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
+            color: #86868b;
+            margin-bottom: 40px;
+            font-size: 15px;
+            font-weight: 400;
+            letter-spacing: -0.24px;
         }
 
         .pin-input-container {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .pin-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #e5e5ea;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 0 0 2px white;
+        }
+
+        .pin-dot.filled {
+            background: #1d1d1f;
+            transform: scale(1.1);
         }
 
         .pin-input {
-            font-size: 24px;
-            letter-spacing: 8px;
-            padding: 15px;
-            border: 2px solid #667eea;
-            border-radius: 8px;
-            text-align: center;
-            width: 100%;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            display: none;
         }
 
-        .pin-input:focus {
-            outline: none;
-            border-color: #764ba2;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        /* KEYPAD */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
-        .pin-input.error {
-            border-color: #ef4444;
-            animation: shake 0.4s;
+        @media (max-width: 480px) {
+            .keypad {
+                gap: 10px;
+            }
+
+            .key-btn {
+                font-size: 18px;
+            }
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        .pin-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
+        .key-btn {
+            aspect-ratio: 1;
+            background: #f5f5f7;
+            border: 1px solid #e5e5ea;
+            border-radius: 14px;
+            font-size: 20px;
+            font-weight: 500;
+            color: #1d1d1f;
             cursor: pointer;
-            width: 100%;
-            transition: transform 0.2s ease;
+            transition: all 0.1s ease;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .pin-button:hover {
-            transform: scale(1.02);
+        .key-btn:active {
+            background: #e8e8ed;
+            transform: scale(0.95);
         }
 
-        .pin-button:active {
+        .key-btn:hover {
+            background: #ececf1;
+        }
+
+        .key-btn.delete {
+            font-size: 24px;
+            color: #666;
+        }
+
+        .pin-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .action-btn {
+            padding: 10px;
+            border: 1px solid #e5e5ea;
+            background: #f5f5f7;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1d1d1f;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .action-btn:hover {
+            background: #ececf1;
+        }
+
+        .action-btn:active {
             transform: scale(0.98);
         }
 
         .pin-error {
-            color: #ef4444;
-            font-size: 14px;
-            margin-top: 10px;
-            min-height: 20px;
+            color: #d70015;
+            font-size: 13px;
+            margin-top: 12px;
+            min-height: 18px;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
 
         /* MAIN APP */
         .app-container {
             display: none;
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 900px;
+            height: 100vh;
             overflow: hidden;
+            flex-direction: column;
         }
 
         .app-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
+            background: white;
+            color: #1d1d1f;
+            padding: 16px 20px;
+            border-bottom: 1px solid #f5f5f7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .app-header h1 {
             font-size: 28px;
-            margin-bottom: 5px;
-        }
-
-        .app-header p {
-            opacity: 0.9;
-            font-size: 14px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
         }
 
         .logout-btn {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
+            background: #f5f5f7;
+            color: #1d1d1f;
             border: none;
             padding: 8px 16px;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
-            transition: background 0.3s ease;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-family: inherit;
         }
 
         .logout-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: #ececf1;
+        }
+
+        .logout-btn:active {
+            transform: scale(0.98);
         }
 
         .app-content {
-            padding: 30px;
-            display: block;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        @media (max-width: 768px) {
-            .app-content {
-                padding: 20px;
-            }
-        }
-
-        .form-section {
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
             padding: 20px;
-            background: #f9fafb;
-        }
-
-        .form-section h2 {
-            font-size: 18px;
-            color: #333;
-            margin-bottom: 20px;
+            display: block;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+            overflow-y: auto;
+            flex: 1;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
         label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            color: #333;
+            color: #1d1d1f;
             margin-bottom: 6px;
+            letter-spacing: -0.24px;
         }
 
         input, select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: border-color 0.3s ease;
+            padding: 12px 14px;
+            border: 1px solid #e5e5ea;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            background: white;
+            color: #1d1d1f;
+            font-family: inherit;
         }
 
         input:focus, select:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #0071e3;
+            box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.1);
         }
 
         .add-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0071e3 0%, #0077be 100%);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            transition: transform 0.2s ease;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            letter-spacing: -0.24px;
         }
 
         .add-btn:hover {
-            transform: scale(1.02);
+            opacity: 0.95;
         }
 
-        .summary-section {
-            background: #f0f4ff;
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid #d4d9f0;
+        .add-btn:active {
+            transform: scale(0.98);
         }
 
-        .summary-item {
+        /* FLOATING ACTION BUTTON */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #0071e3 0%, #0077be 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 113, 227, 0.3);
+            transition: all 0.3s ease;
             display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #d4d9f0;
-            font-size: 14px;
+            justify-content: center;
+            align-items: center;
+            font-weight: 300;
         }
 
-        .summary-item:last-child {
-            border-bottom: none;
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 28px rgba(0, 113, 227, 0.4);
         }
 
-        .summary-item strong {
-            color: #333;
+        .fab:active {
+            transform: scale(0.95);
         }
 
-        .summary-item .amount {
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+        }
+
+        .modal-header {
+            font-size: 18px;
             font-weight: 600;
-        }
-
-        .assets-amount {
-            color: #16a34a;
-        }
-
-        .liabilities-amount {
-            color: #dc2626;
-        }
-
-        .net-worth {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 2px solid #d4d9f0;
-            background: white;
-            padding: 15px;
-            border-radius: 6px;
-            text-align: center;
-        }
-
-        .net-worth-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .items-list {
-            margin-top: 20px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .item {
-            background: white;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 8px;
+            color: #1d1d1f;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 4px solid #667eea;
-            font-size: 14px;
+            letter-spacing: -0.4px;
         }
 
-        .item.liability {
-            border-left-color: #dc2626;
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #86868b;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
         }
 
-        .item-info {
-            flex: 1;
+        .close-btn:hover {
+            color: #1d1d1f;
         }
 
-        .item-name {
+        /* LEDGER STYLING */
+        .ledger-section {
+            margin-bottom: 28px;
+        }
+
+        .ledger-section h3 {
+            font-size: 17px;
             font-weight: 600;
-            color: #333;
+            color: #1d1d1f;
+            margin-bottom: 12px;
+            letter-spacing: -0.4px;
         }
 
-        .item-amount {
-            color: #666;
-            font-size: 13px;
-            margin-top: 2px;
+        .ledger-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: #f5f5f7;
+            border-bottom: 1px solid white;
+            font-size: 15px;
+            border-radius: 10px;
+            margin-bottom: 1px;
+        }
+
+        .ledger-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .ledger-name {
+            font-weight: 500;
+            color: #1d1d1f;
+            letter-spacing: -0.24px;
+        }
+
+        .ledger-amount {
+            font-weight: 600;
+            color: #0071e3;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            letter-spacing: -0.24px;
+        }
+
+        .ledger-item.liability .ledger-amount {
+            color: #d70015;
+        }
+
+        /* SUMMARY CARDS */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 600px) {
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .summary-card {
+            background: #f5f5f7;
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid #f5f5f7;
+        }
+
+        .summary-card-label {
+            font-size: 12px;
+            color: #86868b;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .summary-card-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1d1d1f;
+            letter-spacing: -0.5px;
+        }
+
+        .summary-card.networth {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #0071e3 0%, #0077be 100%);
+            color: white;
+        }
+
+        .summary-card.networth .summary-card-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .summary-card.networth .summary-card-value {
+            color: white;
         }
 
         .delete-btn {
             background: transparent;
-            color: #dc2626;
+            color: #d70015;
             border: none;
             padding: 4px;
             cursor: pointer;
@@ -329,36 +495,24 @@
         .empty-state {
             text-align: center;
             padding: 20px;
-            color: #999;
-            font-size: 14px;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #f3f4f6;
-            border-top: 2px solid #667eea;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+            color: #86868b;
+            font-size: 15px;
+            letter-spacing: -0.24px;
         }
 
         .message {
             padding: 12px;
-            border-radius: 6px;
+            border-radius: 10px;
             margin-bottom: 15px;
-            font-size: 14px;
+            font-size: 13px;
             text-align: center;
+            letter-spacing: -0.24px;
         }
 
         .message.success {
-            background: #dcfce7;
+            background: #d1f4d1;
             color: #166534;
-            border: 1px solid #bbf7d0;
+            border: 1px solid #a6e4a6;
         }
 
         .message.error {
@@ -366,200 +520,36 @@
             color: #991b1b;
             border: 1px solid #fecaca;
         }
-
-        /* FLOATING ACTION BUTTON */
-        .fab {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 28px;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .fab:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 28px rgba(102, 126, 234, 0.6);
-        }
-
-        .fab:active {
-            transform: scale(0.95);
-        }
-
-        /* MODAL */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-
-        .modal-header {
-            font-size: 20px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 28px;
-            color: #999;
-            cursor: pointer;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .close-btn:hover {
-            color: #333;
-        }
-
-        /* LEDGER STYLING */
-        .ledger-section {
-            margin-bottom: 30px;
-        }
-
-        .ledger-section h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #667eea;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .ledger-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: #f9fafb;
-            border-bottom: 1px solid #e5e7eb;
-            font-size: 14px;
-        }
-
-        .ledger-item:last-child {
-            border-bottom: none;
-            border-radius: 0 0 8px 8px;
-        }
-
-        .ledger-item:first-child {
-            border-radius: 8px 8px 0 0;
-        }
-
-        .ledger-name {
-            font-weight: 500;
-            color: #333;
-        }
-
-        .ledger-amount {
-            font-weight: 600;
-            color: #667eea;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .ledger-item.liability .ledger-amount {
-            color: #dc2626;
-        }
-
-        /* SUMMARY CARDS */
-        .summary-cards {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        @media (max-width: 600px) {
-            .summary-cards {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .summary-card {
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .summary-card-label {
-            font-size: 12px;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .summary-card-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: #333;
-        }
-
-        .summary-card.assets .summary-card-value {
-            color: #16a34a;
-        }
-
-        .summary-card.liabilities .summary-card-value {
-            color: #dc2626;
-        }
-
-        .summary-card.networth .summary-card-value {
-            color: #667eea;
-        }
     </style>
 </head>
 <body>
     <!-- PIN SCREEN -->
     <div class="pin-screen" id="pinScreen">
-        <h1>🔐 Unlock</h1>
-        <p>Enter your PIN to access your assets</p>
-        <div class="pin-input-container">
-            <input type="password" id="pinInput" class="pin-input" placeholder="••••" maxlength="4" inputmode="numeric">
+        <h1>Net Worth</h1>
+        <p>Enter PIN to continue</p>
+        <div class="pin-input-container" id="pinDisplay">
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
         </div>
-        <button class="pin-button" onclick="checkPin()">Unlock</button>
+        <input type="password" id="pinInput" class="pin-input">
+        
+        <div class="keypad">
+            <button class="key-btn" onclick="addPin('1')">1</button>
+            <button class="key-btn" onclick="addPin('2')">2</button>
+            <button class="key-btn" onclick="addPin('3')">3</button>
+            <button class="key-btn" onclick="addPin('4')">4</button>
+            <button class="key-btn" onclick="addPin('5')">5</button>
+            <button class="key-btn" onclick="addPin('6')">6</button>
+            <button class="key-btn" onclick="addPin('7')">7</button>
+            <button class="key-btn" onclick="addPin('8')">8</button>
+            <button class="key-btn" onclick="addPin('9')">9</button>
+            <button class="key-btn delete" onclick="deletePin()">⌫</button>
+            <button class="key-btn" onclick="addPin('0')">0</button>
+            <button class="key-btn delete" onclick="clearPin()">C</button>
+        </div>
+        
         <div class="pin-error" id="pinError"></div>
     </div>
 
@@ -663,6 +653,9 @@
         window.openModal = openModal;
         window.closeModal = closeModal;
         window.addItemAndClose = addItemAndClose;
+        window.addPin = addPin;
+        window.deletePin = deletePin;
+        window.clearPin = clearPin;
 
         let isAuthenticated = false;
         let userItems = [];
@@ -692,18 +685,59 @@
             if (e.target === this) closeModal();
         });
 
-        // PIN CHECK
+        // PIN FUNCTIONS
+        function addPin(num) {
+            const pinInput = document.getElementById('pinInput');
+            if (pinInput.value.length < 4) {
+                pinInput.value += num;
+                updatePinDisplay();
+                if (pinInput.value.length === 4) {
+                    setTimeout(checkPin, 150);
+                }
+            }
+        }
+
+        function deletePin() {
+            const pinInput = document.getElementById('pinInput');
+            pinInput.value = pinInput.value.slice(0, -1);
+            updatePinDisplay();
+            document.getElementById('pinError').textContent = '';
+        }
+
+        function clearPin() {
+            const pinInput = document.getElementById('pinInput');
+            pinInput.value = '';
+            updatePinDisplay();
+            document.getElementById('pinError').textContent = '';
+        }
+
+        function updatePinDisplay() {
+            const pinInput = document.getElementById('pinInput');
+            const dots = document.querySelectorAll('.pin-dot');
+            dots.forEach((dot, index) => {
+                if (index < pinInput.value.length) {
+                    dot.classList.add('filled');
+                } else {
+                    dot.classList.remove('filled');
+                }
+            });
+        }
+
         async function checkPin() {
             const pinInput = document.getElementById('pinInput');
             const pinError = document.getElementById('pinError');
             const pin = pinInput.value;
 
+            if (pin.length < 4) return;
+
             if (pin !== '3270') {
-                pinInput.classList.add('error');
-                pinError.textContent = 'Incorrect PIN. Try again.';
+                pinError.textContent = 'Incorrect PIN';
                 pinInput.value = '';
+                updatePinDisplay();
+                const display = document.getElementById('pinScreen');
+                display.style.animation = 'shake 0.4s ease';
                 setTimeout(() => {
-                    pinInput.classList.remove('error');
+                    display.style.animation = '';
                 }, 400);
                 return;
             }
@@ -711,7 +745,7 @@
             isAuthenticated = true;
             pinError.textContent = '';
             document.getElementById('pinScreen').style.display = 'none';
-            document.getElementById('appContainer').style.display = 'block';
+            document.getElementById('appContainer').style.display = 'flex';
             loadItems();
         }
 
@@ -842,9 +876,25 @@
             }
         }
 
-        // Allow Enter key on PIN input
+        // PIN Input keyboard support
+        document.getElementById('pinInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace') {
+                e.preventDefault();
+                deletePin();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                checkPin();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                clearPin();
+            }
+        });
+
         document.getElementById('pinInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') checkPin();
+            if (/[0-9]/.test(e.key)) {
+                e.preventDefault();
+                addPin(e.key);
+            }
         });
 
         // Modal keyboard events
@@ -858,7 +908,9 @@
 
         // Escape key closes modal
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape' && document.getElementById('addModal').classList.contains('active')) {
+                closeModal();
+            }
         });
     </script>
 </body>
