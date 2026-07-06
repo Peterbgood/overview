@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assets & Liabilities Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         * {
             margin: 0;
@@ -13,475 +14,212 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', sans-serif;
-            background: #f5f5f7;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
         }
 
-        /* PIN SCREEN */
-        .pin-screen {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-            padding: 60px 40px;
-            width: 100%;
-            max-width: 320px;
-            text-align: center;
+        .app-content {
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-gutter: stable;
         }
 
-        @media (max-width: 480px) {
-            .pin-screen {
-                padding: 40px 20px;
-                border-radius: 0;
-                max-width: 100%;
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-            }
+        /* Fix scrollbar issue with stable gutter */
+        .scrollable-content {
+            scrollbar-gutter: stable;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
-        .pin-screen h1 {
-            font-size: 32px;
-            font-weight: 700;
-            color: #1d1d1f;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
+        /* SCROLL BAR STYLING */
+        .scrollable-content::-webkit-scrollbar {
+            width: 8px;
         }
 
-        .pin-screen p {
-            color: #86868b;
-            margin-bottom: 40px;
-            font-size: 15px;
-            font-weight: 400;
-            letter-spacing: -0.24px;
+        .scrollable-content::-webkit-scrollbar-track {
+            background: transparent;
         }
 
-        .pin-input-container {
-            margin-bottom: 40px;
-            display: flex;
-            justify-content: center;
-            gap: 8px;
+        .scrollable-content::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
         }
 
-        .pin-dot {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #e5e5ea;
-            transition: all 0.2s ease;
-            box-shadow: inset 0 0 0 2px white;
+        .scrollable-content::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
         }
 
-        .pin-dot.filled {
-            background: #1d1d1f;
-            transform: scale(1.1);
-        }
-
-        .pin-input {
-            display: none;
-        }
-
-        /* KEYPAD */
-        .keypad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        @media (max-width: 480px) {
-            .keypad {
-                gap: 10px;
-            }
-
-            .key-btn {
-                font-size: 18px;
-            }
-        }
-
-        .key-btn {
-            aspect-ratio: 1;
-            background: #f5f5f7;
-            border: 1px solid #e5e5ea;
-            border-radius: 14px;
-            font-size: 20px;
-            font-weight: 500;
-            color: #1d1d1f;
-            cursor: pointer;
-            transition: all 0.1s ease;
-            font-family: inherit;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .key-btn:active {
-            background: #e8e8ed;
-            transform: scale(0.95);
-        }
-
-        .key-btn:hover {
-            background: #ececf1;
-        }
-
-        .key-btn.delete {
-            font-size: 24px;
-            color: #666;
-        }
-
-        .pin-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .action-btn {
-            padding: 10px;
-            border: 1px solid #e5e5ea;
-            background: #f5f5f7;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #1d1d1f;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: inherit;
-        }
-
-        .action-btn:hover {
-            background: #ececf1;
-        }
-
-        .action-btn:active {
-            transform: scale(0.98);
-        }
-
-        .pin-error {
-            color: #d70015;
-            font-size: 13px;
-            margin-top: 12px;
-            min-height: 18px;
-            animation: shake 0.4s ease;
-        }
-
+        /* PIN SCREEN ANIMATIONS */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-8px); }
             75% { transform: translateX(8px); }
         }
 
-        /* MAIN APP */
-        .app-container {
-            display: none;
-            background: white;
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
-            flex-direction: column;
+        .shake-animation {
+            animation: shake 0.4s ease;
         }
 
-        .app-header {
-            background: white;
-            color: #1d1d1f;
-            padding: 16px 20px;
-            border-bottom: 1px solid #f5f5f7;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .app-header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin: 0;
-            letter-spacing: -0.5px;
-        }
-
-        .logout-btn {
-            background: #f5f5f7;
-            color: #1d1d1f;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
+        .pin-dot {
             transition: all 0.2s ease;
-            font-family: inherit;
         }
 
-        .logout-btn:hover {
-            background: #ececf1;
+        .pin-dot.filled {
+            transform: scale(1.1);
+            background: #1d1d1f !important;
         }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100">
+    <!-- PIN SCREEN -->
+    <div id="pinScreen" style="display: flex;" class="pin-screen fixed inset-0 flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
+        <div class="w-full max-w-sm mx-auto px-4">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
+                <h1 class="text-4xl font-black text-slate-900 mb-2 tracking-tight">Secure Access</h1>
+                <p class="text-slate-500 text-base mb-8">Enter your 4-digit PIN</p>
+                
+                <!-- PIN DOTS -->
+                <div class="flex justify-center gap-3 mb-12" id="pinDisplay">
+                    <div class="pin-dot w-5 h-5 rounded-full bg-slate-200"></div>
+                    <div class="pin-dot w-5 h-5 rounded-full bg-slate-200"></div>
+                    <div class="pin-dot w-5 h-5 rounded-full bg-slate-200"></div>
+                    <div class="pin-dot w-5 h-5 rounded-full bg-slate-200"></div>
+                </div>
 
-        .logout-btn:active {
-            transform: scale(0.98);
-        }
+                <!-- KEYPAD -->
+                <div class="grid grid-cols-3 gap-3 mb-6 keypad">
+                    <button onclick="addPin('1')" class="key-btn aspect-square bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-900 text-2xl font-semibold rounded-2xl transition-all active:scale-95">1</button>
+                    <button onclick="addPin('2')" class="key-btn aspect-square bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-900 text-2xl font-semibold rounded-2xl transition-all active:scale-95">2</button>
+                    <button onclick="addPin('3')" class="key-btn aspect-square bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-900 text-2xl font-semibold rounded-2xl transition-all active:scale-95">3</button>
+                    <button onclick="addPin('4')" class="key-btn aspect-square bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-900 text-2xl font-semibold rounded-2xl transition-all active:scale-95">4</button>
+                    <button onclick="addPin('5')" class="key-btn aspect-square bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-900 text-2xl font-semibold rounded-2xl transition-all active:scale-95">5</button>
+                    <button onclick="addPin('6')" class="key-btn aspect-square bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-900 text-2xl font-semibold rounded-2xl transition-all active:scale-95">6</button>
+                    <button onclick="addPin('7')" class="key-btn aspect-square bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-900 text-2xl font-semibold rounded-2xl transition-all active:scale-95">7</button>
+                    <button onclick="addPin('8')" class="key-btn aspect-square bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-900 text-2xl font-semibold rounded-2xl transition-all active:scale-95">8</button>
+                    <button onclick="addPin('9')" class="key-btn aspect-square bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-900 text-2xl font-semibold rounded-2xl transition-all active:scale-95">9</button>
+                    <button onclick="deletePin()" class="key-btn delete col-start-2 aspect-square bg-red-100 hover:bg-red-200 active:bg-red-300 text-red-700 font-semibold rounded-2xl transition-all active:scale-95">⌫</button>
+                    <button onclick="addPin('0')" class="key-btn aspect-square bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-900 text-2xl font-semibold rounded-2xl transition-all active:scale-95">0</button>
+                    <button onclick="clearPin()" class="key-btn delete aspect-square bg-orange-100 hover:bg-orange-200 active:bg-orange-300 text-orange-700 font-semibold rounded-2xl transition-all active:scale-95">C</button>
+                </div>
 
-        .app-content {
-            padding: 20px;
-            display: block;
-            max-width: 600px;
-            margin: 0 auto;
-            width: 100%;
-            overflow-y: auto;
-            flex: 1;
-        }
+                <!-- ERROR MESSAGE -->
+                <div id="pinError" class="text-red-600 text-sm font-medium text-center h-6"></div>
 
-        .form-group {
-            margin-bottom: 16px;
-        }
+                <input type="password" id="pinInput" class="pin-input">
+            </div>
+        </div>
+    </div>
 
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #1d1d1f;
-            margin-bottom: 6px;
-            letter-spacing: -0.24px;
-        }
+    <!-- MAIN APP -->
+    <div id="appContainer" style="display: none;" class="app-container fixed inset-0 flex flex-col bg-white overflow-hidden">
+        <!-- HEADER -->
+        <header class="app-header bg-white border-b border-slate-200 px-4 py-4 md:px-6 md:py-5 flex items-center justify-between flex-shrink-0">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Net Worth</h1>
+                <p class="text-slate-500 text-sm mt-1">Assets & Liabilities Tracker</p>
+            </div>
+            <button onclick="logout()" class="logout-btn px-4 py-2 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 font-semibold rounded-lg transition-all active:scale-95 text-sm">Logout</button>
+        </header>
 
-        input, select {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid #e5e5ea;
-            border-radius: 10px;
-            font-size: 15px;
-            transition: all 0.2s ease;
-            background: white;
-            color: #1d1d1f;
-            font-family: inherit;
-        }
+        <!-- CONTENT -->
+        <div class="app-content scrollable-content flex-1 w-full overflow-y-auto">
+            <div class="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8">
+                
+                <!-- SUMMARY CARDS -->
+                <div class="summary-cards grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-10">
+                    <!-- Assets Card -->
+                    <div class="summary-card bg-slate-50 rounded-2xl p-4 md:p-6 border border-slate-200">
+                        <div class="summary-card-label text-slate-600 text-xs md:text-sm font-semibold uppercase tracking-wide mb-2">Total Assets</div>
+                        <div id="totalAssets" class="summary-card-value text-2xl md:text-4xl font-black text-slate-900 tracking-tight break-words">$0.00</div>
+                    </div>
 
-        input:focus, select:focus {
-            outline: none;
-            border-color: #0071e3;
-            box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.1);
-        }
+                    <!-- Liabilities Card -->
+                    <div class="summary-card bg-slate-50 rounded-2xl p-4 md:p-6 border border-slate-200">
+                        <div class="summary-card-label text-slate-600 text-xs md:text-sm font-semibold uppercase tracking-wide mb-2">Total Liabilities</div>
+                        <div id="totalLiabilities" class="summary-card-value text-2xl md:text-4xl font-black text-slate-900 tracking-tight break-words">$0.00</div>
+                    </div>
 
-        .add-btn {
-            background: linear-gradient(135deg, #0071e3 0%, #0077be 100%);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.2s ease;
-            font-family: inherit;
-            letter-spacing: -0.24px;
-        }
+                    <!-- Net Worth Card -->
+                    <div class="summary-card networth bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl p-4 md:p-6 border border-blue-400 col-span-1 md:col-span-3">
+                        <div class="summary-card-label text-blue-100 text-xs md:text-sm font-semibold uppercase tracking-wide mb-2">Net Worth</div>
+                        <div id="netWorth" class="summary-card-value text-2xl md:text-4xl font-black text-white tracking-tight break-words">$0.00</div>
+                    </div>
+                </div>
 
-        .add-btn:hover {
-            opacity: 0.95;
-        }
+                <!-- ADD BUTTON -->
+                <div class="mb-8 md:mb-10">
+                    <button onclick="openModal()" class="add-btn w-full md:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:from-blue-800 active:to-indigo-800 text-white font-bold rounded-xl transition-all active:scale-95 shadow-lg hover:shadow-xl">
+                        ➕ Add Entry
+                    </button>
+                </div>
 
-        .add-btn:active {
-            transform: scale(0.98);
-        }
+                <!-- ASSETS SECTION -->
+                <div class="ledger-section mb-10">
+                    <h3 class="text-2xl md:text-3xl font-bold text-slate-900 mb-4 tracking-tight">📈 Assets</h3>
+                    <div id="assetsList"></div>
+                </div>
 
-        .bottom-action-section {
-            margin-top: 32px;
-            padding-bottom: 32px;
-        }
+                <!-- LIABILITIES SECTION -->
+                <div class="ledger-section pb-8">
+                    <h3 class="text-2xl md:text-3xl font-bold text-slate-900 mb-4 tracking-tight">📉 Liabilities</h3>
+                    <div id="liabilitiesList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        /* MODAL */
+    <!-- MODAL -->
+    <div id="addModal" class="modal fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-900">Add New Entry</h2>
+                <button class="close-btn text-slate-400 hover:text-slate-600" onclick="closeModal()">✕</button>
+            </div>
+
+            <!-- MESSAGE -->
+            <div id="message" class="mb-4 min-h-6"></div>
+
+            <!-- FORM -->
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Name</label>
+                    <input id="itemName" type="text" placeholder="e.g., House, Car, Student Loan" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Amount</label>
+                    <input id="itemAmount" type="number" placeholder="0.00" step="0.01" min="0" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Type</label>
+                    <select id="itemType" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors">
+                        <option value="asset">Asset</option>
+                        <option value="liability">Liability</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- BUTTONS -->
+            <button onclick="addItemAndClose()" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:from-blue-800 active:to-indigo-800 text-white font-semibold rounded-lg transition-all active:scale-95">Add Entry</button>
+        </div>
+    </div>
+
+    <style>
         .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 999;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            display: none !important;
         }
 
         .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            width: 100%;
-            max-width: 380px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
-        }
-
-        .modal-header {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1d1d1f;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            letter-spacing: -0.4px;
+            display: flex !important;
         }
 
         .close-btn {
-            background: none;
-            border: none;
             font-size: 24px;
-            color: #86868b;
-            cursor: pointer;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: color 0.2s ease;
-        }
-
-        .close-btn:hover {
-            color: #1d1d1f;
-        }
-
-        /* LEDGER STYLING */
-        .ledger-section {
-            margin-bottom: 28px;
-        }
-
-        .ledger-section h3 {
-            font-size: 17px;
-            font-weight: 600;
-            color: #1d1d1f;
-            margin-bottom: 12px;
-            letter-spacing: -0.4px;
-        }
-
-        .ledger-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 16px;
-            background: #f5f5f7;
-            border-bottom: 1px solid white;
-            font-size: 15px;
-            border-radius: 10px;
-            margin-bottom: 1px;
-        }
-
-        .ledger-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-
-        .ledger-name {
-            font-weight: 500;
-            color: #1d1d1f;
-            letter-spacing: -0.24px;
-        }
-
-        .ledger-amount {
-            font-weight: 600;
-            color: #0071e3;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            letter-spacing: -0.24px;
-        }
-
-        .ledger-item.liability .ledger-amount {
-            color: #d70015;
-        }
-
-        /* SUMMARY CARDS */
-        .summary-cards {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        @media (max-width: 600px) {
-            .summary-cards {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .summary-card {
-            background: #f5f5f7;
-            border-radius: 14px;
-            padding: 16px;
-            text-align: center;
-            border: 1px solid #f5f5f7;
-        }
-
-        .summary-card-label {
-            font-size: 12px;
-            color: #86868b;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-
-        .summary-card-value {
-            font-size: 26px;
-            font-weight: 700;
-            color: #1d1d1f;
-            letter-spacing: -0.5px;
-        }
-
-        .summary-card.networth {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, #0071e3 0%, #0077be 100%);
-            color: white;
-        }
-
-        .summary-card.networth .summary-card-label {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .summary-card.networth .summary-card-value {
-            color: white;
-        }
-
-        .delete-btn {
-            background: transparent;
-            color: #d70015;
-            border: none;
-            padding: 4px;
-            cursor: pointer;
-            font-size: 20px;
-            font-weight: 300;
-            transition: all 0.2s ease;
-            opacity: 0.6;
-        }
-
-        .delete-btn:hover {
-            opacity: 1;
-            color: #991b1b;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 20px;
-            color: #86868b;
-            font-size: 15px;
-            letter-spacing: -0.24px;
+            transition: color 0.2s;
         }
 
         .message {
             padding: 12px;
             border-radius: 10px;
-            margin-bottom: 15px;
             font-size: 13px;
             text-align: center;
-            letter-spacing: -0.24px;
         }
 
         .message.success {
@@ -495,118 +233,68 @@
             color: #991b1b;
             border: 1px solid #fecaca;
         }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: #9ca3af;
+            font-size: 15px;
+        }
+
+        .ledger-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: white;
+            border: 2px solid #e5e5ea;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .ledger-item.liability .ledger-amount {
+            color: #d70015;
+        }
+
+        .ledger-name {
+            font-weight: 500;
+            color: #1d1d1f;
+        }
+
+        .ledger-amount {
+            font-weight: 600;
+            color: #0071e3;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .delete-btn {
+            background: transparent;
+            color: #d70015;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            font-size: 20px;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .delete-btn:hover {
+            opacity: 1;
+        }
     </style>
-</head>
-<body>
-    <div class="pin-screen" id="pinScreen">
-        <h1>Net Worth</h1>
-        <p>Enter PIN to continue</p>
-        <div class="pin-input-container" id="pinDisplay">
-            <div class="pin-dot"></div>
-            <div class="pin-dot"></div>
-            <div class="pin-dot"></div>
-            <div class="pin-dot"></div>
-        </div>
-        <input type="password" id="pinInput" class="pin-input">
-        
-        <div class="keypad">
-            <button class="key-btn" onclick="addPin('1')">1</button>
-            <button class="key-btn" onclick="addPin('2')">2</button>
-            <button class="key-btn" onclick="addPin('3')">3</button>
-            <button class="key-btn" onclick="addPin('4')">4</button>
-            <button class="key-btn" onclick="addPin('5')">5</button>
-            <button class="key-btn" onclick="addPin('6')">6</button>
-            <button class="key-btn" onclick="addPin('7')">7</button>
-            <button class="key-btn" onclick="addPin('8')">8</button>
-            <button class="key-btn" onclick="addPin('9')">9</button>
-            <button class="key-btn delete" onclick="deletePin()">⌫</button>
-            <button class="key-btn" onclick="addPin('0')">0</button>
-            <button class="key-btn delete" onclick="clearPin()">C</button>
-        </div>
-        
-        <div class="pin-error" id="pinError"></div>
-    </div>
-
-    <div class="app-container" id="appContainer">
-        <button class="logout-btn" onclick="logout()">Logout</button>
-        
-        <div class="app-header">
-            <h1>💰 Assets & Liabilities</h1>
-            <p>Track your financial position</p>
-        </div>
-
-        <div class="app-content">
-            <div class="summary-cards">
-                <div class="summary-card assets">
-                    <div class="summary-card-label">Total Assets</div>
-                    <div class="summary-card-value" id="totalAssets">$0.00</div>
-                </div>
-                <div class="summary-card liabilities">
-                    <div class="summary-card-label">Total Liabilities</div>
-                    <div class="summary-card-value" id="totalLiabilities">$0.00</div>
-                </div>
-                <div class="summary-card networth" style="grid-column: 1 / -1;">
-                    <div class="summary-card-label">Net Worth</div>
-                    <div class="summary-card-value" id="netWorth">$0.00</div>
-                </div>
-            </div>
-
-            <div id="message"></div>
-
-            <div class="ledger-section">
-                <h3>📈 Assets</h3>
-                <div id="assetsList"></div>
-            </div>
-
-            <div class="ledger-section">
-                <h3>📉 Liabilities</h3>
-                <div id="liabilitiesList"></div>
-            </div>
-            
-            <div class="bottom-action-section">
-                <button class="add-btn" onclick="openModal()">➕ Add New Entry</button>
-            </div>
-        </div>
-
-        <div class="modal" id="addModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <span>➕ Add Entry</span>
-                    <button class="close-btn" onclick="closeModal()">✕</button>
-                </div>
-
-                <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" id="itemName" placeholder="e.g., Savings Account">
-                </div>
-
-                <div class="form-group">
-                    <label>Amount ($)</label>
-                    <input type="number" id="itemAmount" placeholder="0.00" step="0.01" min="0">
-                </div>
-
-                <div class="form-group">
-                    <label>Type</label>
-                    <select id="itemType">
-                        <option value="asset">Asset</option>
-                        <option value="liability">Liability</option>
-                    </select>
-                </div>
-
-                <button class="add-btn" onclick="addItemAndClose()">Add Entry</button>
-            </div>
-        </div>
-    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs, addDoc, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyATVgByZ97lJTZWv18FbCrAryPOXeO0JZ4",
             authDomain: "assets-8cc78.firebaseapp.com",
             projectId: "assets-8cc78",
-            storageBucket: "assets-8cc78.firebasestorage.app",
+            storageBucket: "assets-8cc78.appspot.com",
             messagingSenderId: "981433426082",
             appId: "1:981433426082:web:cb1c5e4c817b8fe8e4f7fb",
             measurementId: "G-NXZBRW1X1B"
@@ -751,7 +439,7 @@
                     amount,
                     type,
                     timestamp: new Date(),
-                    userId: 'default-user' // Using default user since no auth
+                    userId: 'default-user'
                 });
 
                 userItems.push({ id: docRef.id, name, amount, type });
@@ -852,7 +540,6 @@
 
         // Global Keyboard Support for PIN Screen
         document.addEventListener('keydown', function(e) {
-            // Only capture input if the user is not authenticated (meaning they are on the PIN screen)
             if (!isAuthenticated) {
                 if (e.key === 'Backspace') {
                     e.preventDefault();
